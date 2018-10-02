@@ -60,65 +60,9 @@ Resources:
       Tracing: Active
       Policies:
         - AWSXrayWriteOnlyAccess
-      Environment:
-        Variables:
-          DB_INSTANCE: !Ref database137BAF9C
-          DB_ADDRESS: !GetAtt database137BAF9C.Endpoint.Address
-          DB_PORT: !GetAtt database137BAF9C.Endpoint.Port
-          DB_ARN: !Sub arn:aws:rds:${AWS::Region}:${AWS::AccountId}:db:${database137BAF9C}
+      Environment: {}
     Metadata:
       StackeryName: logErrors
-  database137BAF9C:
-    Type: AWS::RDS::DBInstance
-    Properties:
-      AllocatedStorage: '5'
-      AllowMajorVersionUpgrade: true
-      AutoMinorVersionUpgrade: true
-      BackupRetentionPeriod: '0'
-      CopyTagsToSnapshot: true
-      DBInstanceClass: db.t2.micro
-      DBSubnetGroupName: !Ref database137BAF9CSubnetGroup
-      Engine: mariadb
-      EngineVersion: '10.2'
-      MasterUsername: root
-      MasterUserPassword: ''
-      MultiAZ: false
-      PubliclyAccessible: true
-      StorageType: gp2
-      Tags:
-        - Key: Name
-          Value: !Sub
-            - Stackery Stack ${StackeryStackTagName} Environment ${StackeryEnvironmentTagName} Database ${ResourceName}
-            - ResourceName: database137BAF9C
-      VPCSecurityGroups:
-        - !Ref database137BAF9CSecurityGroup
-  database137BAF9CSubnetGroup:
-    Type: AWS::RDS::DBSubnetGroup
-    Properties:
-      DBSubnetGroupDescription: !Sub
-        - Stackery Stack ${StackeryStackTagName} Environment ${StackeryEnvironmentTagName} Database ${ResourceName} VPC Subnets
-        - ResourceName: database137BAF9C
-      SubnetIds: !Ref DefaultVPCSubnets
-      Tags:
-        - Key: Name
-          Value: !Sub
-            - Stackery Stack ${StackeryStackTagName} Environment ${StackeryEnvironmentTagName} Database ${ResourceName} VPC Subnets
-            - ResourceName: database137BAF9C
-  database137BAF9CSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Database Security Group
-      SecurityGroupIngress:
-        CidrIp: 0.0.0.0/0
-        FromPort: 3306
-        IpProtocol: tcp
-        ToPort: 3306
-      Tags:
-        - Key: Name
-          Value: !Sub
-            - Stackery Stack ${StackeryStackTagName} Environment ${StackeryEnvironmentTagName} Database ${ResourceName} VPC Security Group
-            - ResourceName: database137BAF9C
-      VpcId: !Ref DefaultVPCId
   cdnF34A0F6D:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -190,12 +134,6 @@ Parameters:
   StackeryEnvironmentAPIGatewayStageName:
     Type: String
     Description: Environment name used for API Gateway Stage names (injected by Stackery at deployment time)
-  DefaultVPCId:
-    Type: AWS::EC2::VPC::Id
-    Description: AWS account-specific default VPC ID (injected by Stackery at deployment time)
-  DefaultVPCSubnets:
-    Type: List<AWS::EC2::Subnet::Id>
-    Description: AWS account-specific default VPC subnets (injected by Stackery at deployment time)
   StackeryDeploymentNamespace:
     Type: String
     Description: Stackery Deployment Namespace (injected by Stackery at deployment time)
